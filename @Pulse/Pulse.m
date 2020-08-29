@@ -31,6 +31,24 @@ classdef Pulse < matlab.mixin.SetGet & matlab.mixin.Copyable
       % - add sanity checks
     end
 
+    function p_n = interpT(obj, dt_n, method)
+      % _o: old; _n: new
+      if ~exist('method', 'var'), method = 'spline'; end
+
+      [dt_o, nT] = deal(obj.dt, size(obj.rf, 2));
+
+      t_o = ((0:nT)*dt_o)'; % insert 0 at the beginning
+      fn_0 = @(x)[zeros(size(x(:,1,:))), x]; % pad 0 at the beginning along nT
+
+      t_n = (dt_n:dt_n:(dt_o*nT))';
+
+      rf_n = shiftdim(interp1(t_o, shiftdim(fn_0(obj.rf),1), t_n, method), -1);
+      gr_n = interp1(t_o, fn_0(obj.gr).', t_n, method).';
+
+      p_n = mrphy.Pulse('rf',rf_n, 'gr',gr_n, 'dt',dt_n ...
+                        , 'gmax',obj.gmax, 'smax',obj.smax, 'rfmax',obj.rfmax);
+    end
+
     function beff = beff(obj, loc, varargin)
       %INPUTS:
       % - loc (*Nd, xyz)
