@@ -32,8 +32,13 @@ classdef Pulse < matlab.mixin.SetGet & matlab.mixin.Copyable
     end
 
     function p_n = interpT(obj, dt_n, method)
+      if abs(dt_n - obj.dt)/obj.dt < 1e-6, p_n = copy(obj); return; end
       % _o: old; _n: new
-      if ~exist('method', 'var'), method = 'spline'; end
+      if ~exist('method', 'var'), method = 'linear'; end
+      method = lower(method);
+      if ~strcmpi(method, 'linear')
+        warning('Careful: non-linear interp can violate `gmax/smax/rfmax`');
+      end
 
       [dt_o, nT] = deal(obj.dt, size(obj.rf, 2));
 
@@ -47,6 +52,7 @@ classdef Pulse < matlab.mixin.SetGet & matlab.mixin.Copyable
 
       p_n = mrphy.Pulse('rf',rf_n, 'gr',gr_n, 'dt',dt_n ...
                         , 'gmax',obj.gmax, 'smax',obj.smax, 'rfmax',obj.rfmax);
+      p_n.desc = [obj.desc, ' interpT''ed: dt = ', num2str(dt_n)];
     end
 
     function beff = beff(obj, loc, varargin)
