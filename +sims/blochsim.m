@@ -65,13 +65,13 @@ niBmag = -1./Bmag;
 niBmag(isinf(niBmag)) = 0;
 Bn   = bsxfun(@times, Beff, niBmag); % Bn, normalized Beff;
 
-theta = bsxfun(@times, Bmag, gambar)*dt;
-Ct = cos(theta); % (*Nd, 1, nTs) or (1, 1, nTs)
-Ct_1 = 1 - Ct;   % trick for Rotation Matrix
-St = sin(theta); % (*Nd, 1, nTs) or (1, 1, nTs)
+phi = bsxfun(@times, Bmag, gambar)*dt;
+Cp = cos(phi); % (*Nd, 1, nTs) or (1, 1, nTs)
+Cp_1 = 1 - Cp;   % trick for Rotation Matrix
+Sp = sin(phi); % (*Nd, 1, nTs) or (1, 1, nTs)
 
-StBn   = bsxfun(@times, Bn, St);   % trick for Rotation Matrix
-CtBn_1 = bsxfun(@times, Bn, Ct_1); % trick for Rotation Matrix
+SpBn   = bsxfun(@times, Bn, Sp);   % trick for Rotation Matrix
+CpBn_1 = bsxfun(@times, Bn, Cp_1); % trick for Rotation Matrix
 
 [Mx0, My0, Mz0] = deal(Mi(:,1), Mi(:,2), Mi(:,3));
 if doHist, [Mox, Moy, Moz] = deal(zeros(prod(shape), nT)); end
@@ -87,16 +87,16 @@ for istep = 1:nT
   if doFlag(istep)
     % step-wisely extract pre-processed variables
     bn     = Bn(:,:,istep);
-    stbn   = StBn(:,:,istep);
-    ctbn_1 = CtBn_1(:,:,istep);
+    spbn   = SpBn(:,:,istep);
+    cpbn_1 = CpBn_1(:,:,istep);
 
     ip = sum(bsxfun(@times, bn, [Mx0, My0, Mz0]), 2); % vector inner product
-    ct = Ct(:, :, istep);
+    cp = Cp(:, :, istep);
 
     % explicitly express cross(bn, Mo_ii_1) as a matrix vector multiplication
-    mx1 =  ct       .*Mx0 -stbn(:,3).*My0 +stbn(:,2).*Mz0 +ip.*ctbn_1(:,1);
-    my1 =  stbn(:,3).*Mx0 +ct       .*My0 -stbn(:,1).*Mz0 +ip.*ctbn_1(:,2);
-    mz1 = -stbn(:,2).*Mx0 +stbn(:,1).*My0 +ct       .*Mz0 +ip.*ctbn_1(:,3);
+    mx1 =  cp       .*Mx0 -spbn(:,3).*My0 +spbn(:,2).*Mz0 +ip.*cpbn_1(:,1);
+    my1 =  spbn(:,3).*Mx0 +cp       .*My0 -spbn(:,1).*Mz0 +ip.*cpbn_1(:,2);
+    mz1 = -spbn(:,2).*Mx0 +spbn(:,1).*My0 +cp       .*Mz0 +ip.*cpbn_1(:,3);
   else
     mx1 = Mx0;
     my1 = My0;
