@@ -8,9 +8,9 @@
 classdef Pulse < matlab.mixin.SetGet & matlab.mixin.Copyable
   properties (SetAccess = immutable)
     dt = mrphy.utils.envMR('get', 'dt');       % s
-    gmax = mrphy.utils.envMR('get', 'gMax');   % G/cm
-    smax = mrphy.utils.envMR('get', 'sMax');   % G/cm/s
-    rfmax = mrphy.utils.envMR('get', 'rfMax'); % G
+    gmax = mrphy.utils.envMR('get', 'gmax');   % G/cm
+    smax = mrphy.utils.envMR('get', 'smax');   % G/cm/s
+    rfmax = mrphy.utils.envMR('get', 'rfmax'); % G
   end
   properties (SetAccess = public, GetAccess = public)
     rf % (1, nT, (nCoils))

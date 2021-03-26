@@ -1,5 +1,5 @@
 function varargout = envMR(mod, varargin)
-% contains environmental variables: gMax, sMax, dt, gam
+% contains environmental variables: gmax, smax, dt, gam
 %INPUTS:
 % - mod str, case insensitive, {'set', 'get', 'get_s', 'reset'}
 %   'set':   Set environmental persistent variables;
@@ -19,7 +19,7 @@ if nargin == 0, test(); return; end
 
 persistent mrEnv_p % _p: persistent, good to put these vars at the beginning.
 % {Sec, Hz/Gauss, Gauss/cm, Gauss/cm/Sec, Gauss}
-fName_c = {'dt','gam','gMax','sMax','rfMax'};
+fName_c = {'dt','gam','gmax','smax','rfmax'};
 if isempty(mrEnv_p) || strcmpi(mod, 'reset')
   % GE MR750 setting used in fMRIlab UMich, `-1e-9` to avoid save as int in mat
   mrEnv_p = cell2struct({4e-6, 4257.6, 5-1e-9, 12e3-1e-9, 0.25}, fName_c, 2);
@@ -56,11 +56,11 @@ prefix = mfilename('fullpath');
 disp('------------------------');
 disp([prefix, '.test()']);
 env1_s = mrphy.utils.envMR('get_s'); %_s: struct, back up current values
-fName_c = {'dt','gam','gMax','sMax','rfMax'}; % {s, Hz/Gs, Gs/cm, Gs/cm/s, Gs}
+fName_c = {'dt','gam','gmax','smax','rfmax'}; % {s, Hz/Gs, Gs/cm, Gs/cm/s, Gs}
 assert(isequal(fName_c, fieldnames(env1_s)'), 'env var name mismatch');
 
-[dt, gam, gMax, sMax, rfMax] = mrphy.utils.envMR('get', fName_c{:});
-assert(isequal(getattrs(env1_s,fName_c),{dt,gam,gMax,sMax,rfMax}),'get failed');
+[dt, gam, gmax, smax, rfmax] = mrphy.utils.envMR('get', fName_c{:});
+assert(isequal(getattrs(env1_s,fName_c),{dt,gam,gmax,smax,rfmax}),'get failed');
 
 env0_s = mrphy.utils.envMR('reset'); % env2.dt~= env[01].dt
 env2_s = mrphy.utils.envMR('set', 'dt',exp(env0_s.dt)+exp(dt));
