@@ -13,8 +13,8 @@ classdef Pulse < matlab.mixin.SetGet & matlab.mixin.Copyable
     rfmax = mrphy.utils.envMR('get', 'rfmax'); % G
   end
   properties (SetAccess = public, GetAccess = public)
-    rf % (1, nT, (nCoils))
-    gr % (xyz, nT)
+    rf % (1, nT, (nCoils)), G
+    gr % (xyz, nT), G/cm
     desc = 'generic pulse'
   end
   

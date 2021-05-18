@@ -24,8 +24,8 @@ classdef SpinCube < mrphy.SpinArray
     loc_;   % (nM, xyz) cm
   end
   properties (Dependent)
-    loc;   % (*Nd, xyz)
-    b0Map; % (*Nd, 1)
+    loc;   % (*Nd, xyz) cm
+    b0Map; % (*Nd, 1) Hz
 
     ofstn; % (xyz,) [-0.5, 0.5], ofst./fov
     res;   % (xyz,) cm, resolution
@@ -112,7 +112,10 @@ classdef SpinCube < mrphy.SpinArray
     end
 
     function res = get.res(obj), res = obj.fov./obj.dim; end
-    function ofstn = get.ofstn(obj), ofstn = obj.ofst./obj.fov; end
+    function ofstn = get.ofstn(obj)
+      ofstn = obj.ofst./obj.fov;
+      ofstn(isinf(ofstn) | isnan(ofstn)) = 0;
+    end
 
     function set.b0Map(obj, v), obj.b0Map_ = obj.extract(v); end
     function v = get.b0Map(obj), v = obj.embed(obj.b0Map_); end

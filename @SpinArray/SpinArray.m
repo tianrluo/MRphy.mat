@@ -174,7 +174,9 @@ classdef SpinArray < matlab.mixin.SetGet & matlab.mixin.Copyable
   methods % Utilities
     function v_ = extract(obj, v)
       [mask_t, ndim] = deal(obj.mask, numel(obj.dim));
-      shape_v = [size(v), 1]; % [*Nd, ..., 1]
+      s_v = size(v);
+      if numel(s_v) < ndim, s_v = [s_v, ones(1, ndim-numel(s_v))]; end
+      shape_v = [s_v, 1]; % [*Nd, ..., 1]
       v = reshape(v, prod(obj.dim), []);
       v_ = reshape(v(mask_t,:),[obj.nM,shape_v(ndim+1:end)]); % (nM, ...)
     end
